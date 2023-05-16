@@ -316,6 +316,15 @@ function onVisitClick(btn) {
     goToItem(val, group, clusterId, systemId);
 }
 
+function onInfoClick(btn) {
+    console.log(btn);
+    var val = $(btn).data("val");
+    var clusterId = $(btn).data("cluster");
+    var systemId = $(btn).data("system");
+    bindObjectInfo(val, systemId, clusterId);
+}
+
+
 function getUrlVars()
 {
     var vars = [], hash;
@@ -332,13 +341,12 @@ function getUrlVars()
 // Table
 function initialiseTableSearch() {
     var columns = [
-        { title: "Image" },
+        { title: "", orderable: false, width: 96 },
         { title: "Name" },
         { title: "Type" },
         { title: "System" },
         { title: "Cluster" },
-        { title: "Region" },
-        { title: "Visit" }
+        { title: "Region" }
     ];
 
     var dataSet = [];
@@ -346,40 +354,47 @@ function initialiseTableSearch() {
     {
         var cluster = clusters[c];
         dataSet.push([
-            "<object data='img/" + cluster.Marker + "' type='image/png' class='d-block' style='width:28px;height:28px;'><img src='" + getDefaultImagePath("cluster", cluster, true) + "' style='width:28px;height:28px;'/></object>",
+            "<img src='img/" + cluster.Marker + "' default-src='" + getDefaultImagePath("cluster", cluster, true) + "'  style='width:28px;height:28px;' onerror='defaultImageSwitch.call(this)' />"
+            + "&nbsp;<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + cluster.Id + "' data-group='cluster' data-cluster='' data-system=''><i class='fas fa-angles-right'></i></button>",
             cluster.Name,
             "Cluster",
             "",
             "",
-            cluster.Region,
-            "<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + cluster.Id + "' data-group='cluster' data-cluster='' data-system=''>Visit</button>"
+            cluster.Region
         ]);
 
         for (var s in cluster.Systems) 
         {
             var system = cluster.Systems[s];
             dataSet.push([
-                "<object data='img/" + system.Marker + "' type='image/png' class='d-block' style='width:28px;height:28px;'><img src='" + getDefaultImagePath("system", system, true) + "' style='width:28px;height:28px;'/></object>",
+                "<img src='img/" + system.Marker + "' default-src='" + getDefaultImagePath("system", system, true) + "'  style='width:28px;height:28px;' onerror='defaultImageSwitch.call(this)' />"
+                + "&nbsp;<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + system.Id + "' data-group='system' data-cluster='" + cluster.Id + "' data-system=''><i class='fas fa-angles-right'></i></button>",
                 system.Name,
                 "System",
                 "",
                 cluster.Name,
-                cluster.Region,
-                "<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + system.Id + "' data-group='system' data-cluster='" + cluster.Id + "' data-system=''>Visit</button>"
+                cluster.Region
             ]);
 
             for (var p in system.Planets) 
             {
                 var planet = system.Planets[p];
+                var btn = "<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + planet.Id + "' data-group='object' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-angles-right'></i></button>";
+                if (planet.Description) {
+                    btn = 
+                    "<div class='btn-group btn-group-sm'>" + btn + 
+                    "<button class='btn btn-sm btn-outline-info' onclick='onInfoClick(this);' data-val='" + planet.Id + "' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-info'></i></button>" +
+                    "</div>";
+                }
                 if (planet.Type != "Asteroid Belt" && planet.Type != "") {
                     dataSet.push([
-                        "<object data='img/" + planet.Marker + "' type='image/png' class='d-block' style='width:28px;height:28px;'><img src='" + getDefaultImagePath("planet", planet, true) + "' style='width:28px;height:28px;'/></object>",
+                        "<img src='img/" + planet.Marker + "' default-src='" + getDefaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror='defaultImageSwitch.call(this)' />"
+                        + "&nbsp;" + btn,      
                         planet.Name,
                         planet.Type,
                         system.Name,
                         cluster.Name,
-                        cluster.Region,
-                        "<button class='btn btn-sm btn-outline-info' onclick='onVisitClick(this);' data-val='" + planet.Id + "' data-group='object' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'>Visit</button>"
+                        cluster.Region           
                     ]);
                 }
             }
@@ -389,12 +404,13 @@ function initialiseTableSearch() {
     var table = $("#table-obj").DataTable({
         data: dataSet,
         columns: columns,
-        responsive: true
+        responsive: true,
+        autoWidth: false
     });
     
     $('#table-obj thead th').each( function (i) {
         var title = $('#table-obj thead th').eq($(this).index()).text();
-        if (title != "Image" && title != "Visit") {
+        if (title != "Image" && title != "Visit" && title != "") {
             var filter = null;
             if (title == "Type") {
                 filter = $("<select id='type-table-filter' class='form-control form-control-sm col m-1 selectpicker' data-index='" + i + "' data-live-search='true' data-style='btn-outline-secondary bg-dark'></select>");
@@ -499,4 +515,9 @@ function setBreadcrumb(galaxy, galaxyName, cluster, clusterName, system, systemN
     }
 
     $(".leaflet-top.leaflet-left").append(container);
+}
+
+function defaultImageSwitch() {
+    var def = $(this).attr("default-src")
+    $(this).attr("src", def);
 }

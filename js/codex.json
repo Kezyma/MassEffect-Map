@@ -1,0 +1,27 @@
+[
+    {
+        "Name": null,
+        "Type": "Mass Relay",
+        "Description": "Mass relays are feats of Prothean engineering advanced far beyond the technology of any living species. They are enormous structures scattered throughout the stars, and can create corridors of virtually mass-free space allowing instantaneous transit between locations separated by years or even centuries of travel using conventional FTL drives.<br/><br/>Primary mass relays can propel ships thousands of light years, often from one spiral arm of the galaxy to another. However, they have fixed one-to-one connections: a primary relay connects to one other primary relay, and nowhere else. Secondary relays can only propel ships a few hundred light years, however they are omnidirectional: a secondary relay can send a ship to any other relay within its limited range.<br/><br/>There are many dormant primary relays whose corresponding twins have not yet been located. These are left inactive until their partner is charted, as established civilizations are unwilling to blindly open a passage that might connect them to a hostile species."
+    },
+    {
+        "Name": "Citadel",
+        "Type": "Station",
+        "Description": "The Citadel is an ancient deep-space station, presumably constructed by the Protheans. Since the Prothean extinction, numerous species have come to call the Citadel home. It serves as the political, cultural, and financial capital of the galactic community. To represent their interests, most species maintain embassies on the Presidium, the Citadel's inner ring.<br/><br/>The Citadel Tower, in the center of the Presidium, holds the Citadel Council chambers. Council affairs often have far-reaching effects on the rest of the galactic community. Five arms, known as the wards, extend from the Presidium. Their inner surfaces have been built into cities, populated by millions of inhabitants from across the galaxy.<br/><br/>The Citadel is virtually indestructible. If attacked, the station can close its arms to form a solid, impregnable shell. For as long as the station has existed, an enigmatic race called the keepers has maintained it."
+    },
+    {
+        "Name": "Aeia",
+        "Type": null,
+        "Description": "Humans detected Aeia as an Earth-type world via telemetry in 2165. After probe surveys indicated life -- lush vegetation, ample fresh water and breathable air -- the Alliance upgraded the planet to a garden-world colonization priority. Commanded by Captain Ronald Taylor, the crew of Alliance survey vessel Hugo Gernsback made planetfall on the jungle world in 2173. Soon after, ship transmissions inexplicably stopped. While the precise fate of the Hugo Gernsback command and crew is unknown, they are presumed killed in action and their vessel destroyed."
+    },
+    {
+        "Name": "Gellix",
+        "Type": null,
+        "Description": "Gellix, the second planet in the Arrae system, is a marginally habitable world of mountains and ice.<br/><br/>The planet was turned into a human penal colony upon its discovery in 2161, but its prisons shut in 2179 after racking up the worst safety records in the Systems Alliance. Lawsuits are still in the courts.<br/><br/>Shortly after the closure of the prisons, a handful of intergalactic corporations moved in to set up mines, supply depots, and other facilities on the planet."
+    },
+    {
+        "Name": "Grissom Academy",
+        "Type": null,
+        "Description": "The Jon Grissom Academy, founded in 2176, is the Alliance's premier school for young human biotics. The institution is housed in a space station in orbit over the human colony of Elysium. Its main program, the Ascension Project, is designed both to train and monitor young biotics as well as help them integrate into society after graduation. Unlike the project's previous incarnation, Biotic Acclimation and Temperance Training, or BAaT, the training is not exclusively military in nature.<br/><br/>The academy also employs scientific personnel, including Dr. Kahlee Sanders, to develop synthetic intelligence systems and biotic amplifiers like the new L4 implants."
+    }
+]
