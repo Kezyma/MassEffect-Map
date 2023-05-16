@@ -342,7 +342,7 @@ class GalaxyMap {
                 var starScale = planet.Type == "Star";
                 var asteroidBelt = planet.AsteroidBelt == true;
                 var altScale = this.scaleObjectRadius(planet);
-                var scale = this.scaleObjectIcon(altScale, starScale);
+                var scale = this.scaleObjectIcon(planet.Scale, starScale);
                 var size = this.IconSizes[this.SystemMap.getZoom()];
                 if (planet.Scale > 0) {
                     var marker = L.marker([this.CY(planet.Y), this.CX(planet.X)], {
