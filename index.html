@@ -19,7 +19,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" aria-current="page" onclick="toggleTableSearch();">Browse</a>
+                    <a class="nav-link" aria-current="page" id="table-search-btn">Browse</a>
                 </li>
                 </ul>
                 <div class="nav-item">
@@ -45,7 +45,7 @@
                     <div class="card mt-3">
                         <div id="table-header" class="card-header">
                             <h3 class="mb-0 d-inline-block">Galaxy Browser</h3>
-                            <button onclick="toggleTableSearch();" class="float-end btn btn-sm btn-outline-danger d-inline-block float-right">
+                            <button id="table-close-btn" class="float-end btn btn-sm btn-outline-danger d-inline-block float-right">
                                 <i class="fa fa-solid fa-times"></i>
                             </button>
                         </div>
@@ -96,6 +96,7 @@
         <script src="js/galaxy_galaxyMap.js"></script>
         <script src="js/galaxy_clusterMap.js"></script>
         <script src="js/galaxy_systemMap.js"></script>
+        <script src="js/galaxy_map.js"></script>
         <script src="js/site.js"></script>
     </body>
 </html>
