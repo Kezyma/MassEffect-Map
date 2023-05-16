@@ -341,7 +341,8 @@ class GalaxyMap {
                 var planet = this.CurrentSystem.Planets[i];
                 var starScale = planet.Type == "Star";
                 var asteroidBelt = planet.AsteroidBelt == true;
-                var scale = this.scaleObjectIcon(planet.Scale, starScale);
+                var altScale = this.scaleObjectRadius(planet);
+                var scale = this.scaleObjectIcon(altScale, starScale);
                 var size = this.IconSizes[this.SystemMap.getZoom()];
                 if (planet.Scale > 0) {
                     var marker = L.marker([this.CY(planet.Y), this.CX(planet.X)], {
@@ -731,6 +732,25 @@ class GalaxyMap {
         }
         return multi;
     };
+
+    scaleObjectRadius = (object) => {
+        if (Object.hasOwn(object, "Stats") && object.Stats) {
+            var r = object.Stats["Radius"];
+            if (r) {
+                var rs = r.split(" ")[0];
+                var rsv = rs.replace(",", "");
+                try {
+                    var ri = parseInt(rsv);
+                    var scale = (((ri - 3000)/2.5)+3000) / 3000;
+                    return scale;
+                }
+                catch {
+                    return object.Scale;
+                }
+            }
+        }
+        return object.Scale;
+    }
 
     togglePopovers = () => {
         if (this.ShowPopovers) {
