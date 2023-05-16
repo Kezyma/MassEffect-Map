@@ -200,6 +200,7 @@ class GalaxyMap {
                 if (thisObj.GalaxyMap.getZoom() == thisObj.MaxZoom) {
                     // Zoom to cluster if reaching max zoom.
                     thisObj.galaxyZoomToCluster();
+                    thisObj.GalaxyMap.zoomOut();
                 }
                 else {
                     // Resize to current zoom level.
