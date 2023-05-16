@@ -510,7 +510,7 @@ class GalaxyMap {
     initialiseBrowseFunction = () => {
         var thisObj = this;
         var columns = [
-            { title: "", orderable: false, width: 96 },
+            { title: "", orderable: false, width: 72 },
             { title: "Name" },
             { title: "Type" },
             { title: "System" },
@@ -1028,7 +1028,6 @@ class GalaxyMap {
         galaxyMap: this,
         options: { position: 'topleft' },
         onAdd: function (map) {
-            console.log(this);
             var thisObj = this.galaxyMap;
             var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
     

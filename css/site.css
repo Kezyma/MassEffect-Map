@@ -61,3 +61,13 @@ body {
 nav {
     z-index: 99999;
 }
+
+table.dataTable td {
+    padding: 3px 10px;
+    width: 1px;
+    white-space: nowrap;
+}
+
+#table-obj_filter {
+    display: none;
+}
