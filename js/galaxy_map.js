@@ -100,6 +100,7 @@ class GalaxyMap {
 
             thisObj.initialiseSearchFunction();
             thisObj.initialiseBrowseFunction();
+            thisObj.initialisePlanetDirectory();
         });
 
         $("#object-close-btn").click(function () {
@@ -703,9 +704,224 @@ class GalaxyMap {
             thisObj.toggleBrowseTable();
         });
     }
+
+    initialisePlanetDirectory = () => {
+        var thisObj = this;
+        var columns = [
+            { title: "", orderable: false, width: 72 },
+            { title: "Name" },
+            { title: "Type" },
+            { title: "Population" },
+            { title: "Surface Temperature (Celsius)" },
+            { title: "Surface Gravity (G)" },
+            { title: "Atmospheric Pressure (Earth)"},
+            { title: "Orbital Distance (AU)" },
+            { title: "Orbital Period (Years)" },
+            { title: "Day Length (Hours)" },
+            { title: "Radius (km)" },
+            { title: "System" },
+            { title: "Cluster" },
+            { title: "Region" }
+        ];
+
+        var dataSet = [];
+        for (var c in this.Clusters) 
+        {
+            var cluster = this.Clusters[c];
+            for (var s in cluster.Systems) 
+            {
+                var system = cluster.Systems[s];
+                for (var p in system.Planets) 
+                {
+                    var planet = system.Planets[p];
+                    var btn = "<button class='btn btn-sm btn-outline-info planet-visit-btn' data-val='" + planet.Id + "' data-group='planet' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-angles-right'></i></button>";
+                    if (planet.Description) {
+                        btn = 
+                        "<div class='btn-group btn-group-sm'>" + btn + 
+                        "<button class='btn btn-sm btn-outline-info planet-info-btn' data-val='" + planet.Id + "' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-info'></i></button>" +
+                        "</div>";
+                    }
+                    if (planet.Type != "Asteroid Belt" && planet.Type != "" && planet.Stats) {
+                        var radius = null;
+                        var orbitDistance = null;
+                        var orbitPeriod = null;
+                        var dayLength = null;
+                        var population = null;
+                        var surfaceTemp = null;
+                        var surfaceGrav = null;
+                        var atmosPressure = null;
+                        for (var key in planet.Stats) {
+                            if (key.includes("Radius")) {
+                                var r = planet.Stats[key];
+                                var rs = r.trim().split(" ")[0].replace(",","");
+                                var ri = parseInt(rs);
+                                if (ri) {
+                                    if (radius) {
+                                        radius += ri;
+                                    }
+                                    else {
+                                        radius = ri;
+                                    }
+                                }
+                            }
+                            if (key.includes("Orbital Distance")) {
+                                var d = planet.Stats[key];
+                                var ds = d.trim().split(" ")[0].replace(",", "");
+                                var au = d.trim().split(" ")[1];
+                                var isAu = au && au.startsWith("AU");
+                                var rf = parseFloat(ds);
+                                if (rf && isAu) {
+                                    orbitDistance = rf;
+                                }
+                            }
+                            if (key.includes("Population")) {
+                                var r = planet.Stats[key];
+                                var rs = r.trim().split(" ")[0].replace(",","");
+                                var rm = r.trim().split(" ")[1];
+                                var pf = parseFloat(rs);
+                                var nPop = null;
+                                if (rm && pf) {
+                                    if (rm.startsWith("billion")) {
+                                        nPop = pf * 1000000000;
+                                    }
+                                    else if (rm.startsWith("million")) {
+                                        nPop = pf * 1000000;
+                                    }
+                                    else if (rm.startsWith("thousand")) {
+                                        nPop = pf * 1000;
+                                    }
+                                    else {
+                                        nPop = pf;
+                                    }
+                                    nPop = Math.trunc(nPop);
+                                }
+                                else if (pf) {
+                                    nPop = Math.trunc(pf);
+                                }
+                                if (nPop) {
+                                    if (population) {
+                                        population += nPop;
+                                    }
+                                    else {
+                                        population = nPop;
+                                    }
+                                }
+                            }
+                            if (key.includes("Orbital Period")) {
+                                var p = planet.Stats[key];
+                                var pt = p.trim().split(" ");
+                                var rs = pt[0].replace(",","");
+                                var rm = pt[1];
+                                var rm2 = pt[2];
+                                var pf = parseFloat(rs);
+                                if (rm && rm.startsWith("Earth") && rm2 && rm2.startsWith("Year")) {
+                                    orbitPeriod = pf;
+                                }
+                            }
+                            if (key.includes("Day Length")) {
+                                var p = planet.Stats[key];
+                                var pt = p.trim().split(" ");
+                                var rs = pt[0].replace(",","");
+                                var rm = pt[1];
+                                var rm2 = pt[2];
+                                var pf = parseFloat(rs);
+                                if (rm && rm.startsWith("Earth") && rm2 && rm2.startsWith("Hours")) {
+                                    dayLength = pf;
+                                }
+                            }
+                            if (key.includes("Temperature")) {
+                                var p = planet.Stats[key];
+                                var pt = p.trim().split(" ");
+                                var rs = pt[0].replace(",","");
+                                var rm = pt[1];
+                                var pf = parseFloat(rs);
+                                if (rm && rm.startsWith("Celsius")) {
+                                    surfaceTemp = pf;
+                                }
+                            }
+                            if (key.includes("Gravity")) {
+                                var p = planet.Stats[key];
+                                var pt = p.trim().split(" ");
+                                var rs = pt[0].replace(",","");
+                                var rm = pt[1];
+                                var pf = parseFloat(rs);
+                                if (rm && rm.startsWith("G")) {
+                                    surfaceGrav = pf;
+                                }
+                            }
+                            if (key.includes("Atmospheric Pressure")) {
+                                var p = planet.Stats[key];
+                                var pt = p.trim().split(" ");
+                                var rs = pt[0].replace(",","");
+                                var rm = pt[1];
+                                var rm2 = pt[2];
+                                var pf = parseFloat(rs);
+                                if (rm && rm.startsWith("Earth") && rm2 && rm2.startsWith("Atmospheres")) {
+                                    atmosPressure = pf;
+                                }
+                            }
+                        }
+
+                        dataSet.push([
+                            "<img src='img/" + planet.Marker + "' default-src='" + this.defaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror=\"" + this.ImageSwitchFunc + "\" />"
+                            + "&nbsp;" + btn,      
+                            planet.Name,
+                            planet.Type,
+                            population ? population.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",
+                            surfaceTemp ? surfaceTemp.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",
+                            surfaceGrav ? surfaceGrav.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",
+                            atmosPressure ? atmosPressure.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",
+                            orbitDistance ? orbitDistance.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",    
+                            orbitPeriod ? orbitPeriod.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",   
+                            dayLength ? dayLength.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",   
+                            radius ? radius.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") : "",
+                            system.Name,
+                            cluster.Name,
+                            cluster.Region
+                        ]);
+                    }
+                }
+            }
+        }
+
+        var table = $("#directory-obj").DataTable({
+            data: dataSet,
+            columns: columns,
+            responsive: true,
+            autoWidth: false,
+            drawCallback: function(settings) {
+                $(".planet-visit-btn").click(function () {
+                    thisObj.toggleBrowseTable();
+                    var val = $(this).data("val");
+                    var group = $(this).data("group");
+                    var clusterId = $(this).data("cluster");
+                    var systemId = $(this).data("system");
+                    thisObj.zoomToItem(val, group, systemId, clusterId);
+                }); 
+                $(".planet-info-btn").click(function () {
+                    var val = $(this).data("val");
+                    var clusterId = $(this).data("cluster");
+                    var systemId = $(this).data("system");
+                    thisObj.initialiseObjectInfoPopup(val, systemId, clusterId);
+                });
+            }
+        });
+
+        $("#directory-search-btn").click(function () {
+            thisObj.toggleDirectoryTable();
+        });
+
+        $("#directory-close-btn").click(function () {
+            thisObj.toggleDirectoryTable();
+        });
+    };
     
     toggleBrowseTable = () => {
         $("#table-pane").toggle();
+    };
+
+    toggleDirectoryTable = () => {
+        $("#directory-pane").toggle();
     };
 
     uniqueFilter = (value, index, array) => {
