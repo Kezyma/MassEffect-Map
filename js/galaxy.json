@@ -1,19 +1,5 @@
 [
     {
-        "Id": "heleus-cluster",
-        "Name": "Heleus Cluster",
-        "Region": "Heleus Cluster",
-        "X": 900,
-        "Y": 100,
-        "Marker": "cluster_marker\\HeleusCluster.png",
-        "Image": "cluster\\HeleusCluster.jpg",
-        "Systems": [],
-        "Connections": [],
-        "ME1": false,
-        "ME2": false,
-        "ME3": false
-    },
-    {
         "Id": "aethon-cluster",
         "Name": "Aethon Cluster",
         "Region": "Inner Council Space",
