@@ -437,7 +437,7 @@ class GalaxyMap {
             $("#info-table").remove();
             $("#object-content").html(o.Description);
             if (o.Stats) {
-                var statTable = $("<table id='info-table' class='table card-body w-100 m-0'></table>");
+                var statTable = $("<table id='info-table' class='table card-body w-100 m-0 text-desc'></table>");
                 var statRows = $("<tbody></tbody>");
                 for (var k in o.Stats) {
                     var headRow = $("<tr><td>" + k + "</td><td>" + o.Stats[k] + "</td></tr>");
