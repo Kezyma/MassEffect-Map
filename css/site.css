@@ -103,3 +103,11 @@ table.dataTable td {
 #table-obj_filter {
     display: none;
 }
+
+.breadcrumb-container {
+    color: #DDD;
+    padding-left: 3em;
+    padding-right: 2em;
+    position: fixed;
+    font-family: Tigensu;
+}

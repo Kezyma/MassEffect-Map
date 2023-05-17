@@ -12,15 +12,18 @@ class GalaxyMap {
     GalaxyRegionLayer = null;
     GalaxyColourLayer = null;
     GalaxyLabelLayer = null;
+    GalaxyBreadcrumb = null;
 
     ClusterMap = null;
     ClusterMarkers = [];
     CurrentCluster = null;
+    ClusterBreadcrumb = null;
 
     SystemMap = null;
     SystemMarkers = [];
     SystemOrbits = [];
     CurrentSystem = null;
+    SystemBreadcrumb = null;
 
     CurrentType = null;
     ShowPopovers = false;
@@ -103,6 +106,10 @@ class GalaxyMap {
             $("#object-pane").hide();
         });
     }
+
+    pageTitle = (title) => {
+        return title + " - Galaxy Map";
+    };
 
     initialiseGalaxyMap = () => {
         // Show the map.
@@ -208,10 +215,14 @@ class GalaxyMap {
                     $("#" + gmId + " .leaflet-marker-icon").popover("update");
                 }
             });
+
+            this.GalaxyBreadcrumb = new this.breadcrumbControls();
+            this.GalaxyBreadcrumb.addTo(this.GalaxyMap);
         }
 
         // Update page settings.
         this.CurrentType = "galaxy";
+        document.title = this.pageTitle("Milky Way");
         this.updateUrlParams("Milky Way", null, null);
         this.disablePopovers();
     };
@@ -303,8 +314,17 @@ class GalaxyMap {
             });
         }
 
+        // Update breadcrumb.
+        if (this.ClusterBreadcrumb) {
+            this.ClusterBreadcrumb.remove(this.ClusterMap);
+        }
+        this.ClusterBreadcrumb = new this.breadcrumbControls();
+        this.ClusterBreadcrumb.clusterId = this.CurrentCluster.Id;
+        this.ClusterBreadcrumb.addTo(this.ClusterMap);
+
         // Update page settings.
         this.CurrentType = "cluster";
+        document.title = this.pageTitle(this.CurrentCluster.Name);
         this.updateUrlParams(this.CurrentCluster.Name, null, clusterId);
         this.disablePopovers();
     };
@@ -421,7 +441,17 @@ class GalaxyMap {
             });
         }
         
+        // Update breadcrumb.
+        if (this.SystemBreadcrumb) {
+            this.SystemBreadcrumb.remove(this.SystemMap);
+        }
+        this.SystemBreadcrumb = new this.breadcrumbControls();
+        this.SystemBreadcrumb.clusterId = this.CurrentCluster.Id;
+        this.SystemBreadcrumb.systemId = this.CurrentSystem.Id;
+        this.SystemBreadcrumb.addTo(this.SystemMap);
+
         this.CurrentType = "system";
+        document.title = this.pageTitle(this.CurrentSystem.Name);
         this.updateUrlParams(this.CurrentSystem.Name, systemId, clusterId);
         this.disablePopovers();
     };
@@ -1044,6 +1074,36 @@ class GalaxyMap {
         }
         return def;
     };
+
+    breadcrumbControls = L.Control.extend({
+        galaxyMap: this,
+        clusterId: null,
+        systemId: null,
+        options: { position: 'topleft' },
+        onAdd: function () {
+            var thisObj = this.galaxyMap;
+            var container = L.DomUtil.create('div', 'row breadcrumb-container');
+            var title = L.DomUtil.create('h4', 'col-auto pe-0', container);
+            title.innerHTML = "Milky Way";
+
+            if (this.clusterId) {
+                title.innerHTML += " <i class='fas fa-angles-right'></i>";
+
+                var cluster = thisObj.Clusters.filter(x => x.Id == this.clusterId)[0];
+                var cTitle = L.DomUtil.create('h4', 'col-auto pe-0', container);
+                cTitle.innerHTML = cluster.Name;
+
+                if (this.systemId) {
+                    cTitle.innerHTML += " <i class='fas fa-angles-right'></i>";
+
+                    var system = cluster.Systems.filter(x => x.Id == this.systemId)[0];
+                    var sTitle = L.DomUtil.create('h4', 'col-auto pe-0', container);
+                    sTitle.innerHTML = system.Name;
+                }
+            }
+            return container;
+        }
+    });
 
     galaxyToggleControls = L.Control.extend({
         galaxyMap: this,
