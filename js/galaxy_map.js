@@ -741,7 +741,7 @@ class GalaxyMap {
                         "<button class='btn btn-sm btn-outline-info planet-info-btn' data-val='" + planet.Id + "' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-info'></i></button>" +
                         "</div>";
                     }
-                    if (planet.Type != "Asteroid Belt" && planet.Type != "" && planet.Stats) {
+                    if (planet.Type != "Asteroid Belt" && planet.Type != "" && planet.Stats && planet.Stats != null) {
                         var radius = null;
                         var orbitDistance = null;
                         var orbitPeriod = null;

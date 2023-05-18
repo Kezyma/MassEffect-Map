@@ -20577,22 +20577,6 @@
                 "Scale": 1.0,
                 "Planets": [
                     {
-                        "Stats": null,
-                        "Id": "the-sea-of-storms",
-                        "Name": "The Sea of Storms",
-                        "Scale": 1.0,
-                        "Type": "Star",
-                        "Description": null,
-                        "X": 500,
-                        "Y": 500,
-                        "Marker": "star_marker\\The-Sea-of-Storms.png",
-                        "Image": "star\\The-Sea-of-Storms.png",
-                        "AsteroidBelt": false,
-                        "ME1": false,
-                        "ME2": false,
-                        "ME3": false
-                    },
-                    {
                         "Stats": {
                             "Population": "6.6 million copies, 2.4 million platforms, 1 million of which are in storage.",
                             "Total Length": "20.5 km",
@@ -20610,6 +20594,7 @@
                         "Y": 452,
                         "Marker": "object_marker\\GethStation_galaxymap.png",
                         "Image": "object\\GethStation_galaxymap.png",
+                        "ShowOrbit": false,
                         "AsteroidBelt": false,
                         "ME1": false,
                         "ME2": true,
