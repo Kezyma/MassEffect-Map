@@ -36,6 +36,8 @@ class GalaxyMap {
     IconZoomMulti = 1.9;
     GalaxyJson = "./js/galaxy.json";
     ImageSwitchFunc = "$(this).attr('src', $(this).attr('default-src'));";
+    BrowseInitialised = false;
+    DirectoryInitialised = false;
 
     // Galaxy Map Settings
     GalaxyMapBounds = [[-1,-1],[1,1]];
@@ -61,6 +63,7 @@ class GalaxyMap {
     PlanetOrbitColour = "#666";
     ShowSystemMarkers = false;
     ShowSystemOrbits = false;
+    RingPlanetScale = 2.4609375;
 
     constructor(galaxyMapId, clusterMapId, systemMapId) {
         var thisObj = this;
@@ -70,7 +73,7 @@ class GalaxyMap {
 
         // Generate icon sizes for the maps.
         var x = 1;
-        for (var i = this.MinZoom; i < this.MaxZoom; i++) {
+        for (var i = this.MinZoom; i <= this.MaxZoom; i++) {
             var w = i * x;
             if (w < this.MinIconSize) {
                 w = this.MinIconSize;
@@ -99,8 +102,22 @@ class GalaxyMap {
             }
 
             thisObj.initialiseSearchFunction();
-            thisObj.initialiseBrowseFunction();
-            thisObj.initialisePlanetDirectory();
+
+            $("#table-search-btn").click(function () {
+                thisObj.toggleBrowseTable();
+            });
+
+            $("#table-close-btn").click(function () {
+                thisObj.toggleBrowseTable();
+            });
+
+            $("#directory-search-btn").click(function () {
+                thisObj.toggleDirectoryTable();
+            });
+
+            $("#directory-close-btn").click(function () {
+                thisObj.toggleDirectoryTable();
+            });
         });
 
         $("#object-close-btn").click(function () {
@@ -362,18 +379,20 @@ class GalaxyMap {
                 var planet = this.CurrentSystem.Planets[i];
                 var starScale = planet.Type == "Star";
                 var asteroidBelt = planet.AsteroidBelt == true;
+                var hasRings = Object.hasOwn(planet, "HasRings") && planet.HasRings;
                 var altScale = this.scaleObjectRadius(planet);
                 var scale = this.scaleObjectIcon(planet.Scale, starScale);
                 var size = this.IconSizes[this.SystemMap.getZoom()];
                 if (planet.Scale > 0) {
                     var marker = L.marker([this.CY(planet.Y), this.CX(planet.X)], {
-                        icon: L.icon({ iconUrl: this.objectImagePath("planet", planet, true), iconSize: [ size[0] * scale, size[1] * scale ] }), 
+                        icon: L.icon({ iconUrl: this.objectImagePath("planet", planet, true), iconSize: [ size[0] * scale * (hasRings ? this.RingPlanetScale : 1), size[1] * scale ] }), 
                         title: planet.Name, 
                         planetId: planet.Id,
                         systemId: this.CurrentSystem.Id,
                         clusterId: this.CurrentCluster.Id,
                         star: starScale,
                         scale: scale,
+                        rings: hasRings,
                         riseOnHover: true
                     });
                     marker.on("click", function () {
@@ -588,9 +607,13 @@ class GalaxyMap {
                         "<button class='btn btn-sm btn-outline-info planet-info-btn' data-val='" + planet.Id + "' data-cluster='" + cluster.Id + "' data-system='" + system.Id + "'><i class='fas fa-info'></i></button>" +
                         "</div>";
                     }
+                    var marker = planet.Marker;
+                    if (Object.hasOwn(planet, "HasRings") && planet.HasRings && planet.Marker) {
+                        marker = planet.Marker.replace(".", "_nr.");
+                    }
                     if (planet.Type != "Asteroid Belt" && planet.Type != "") {
                         dataSet.push([
-                            "<img src='img/" + planet.Marker + "' default-src='" + this.defaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror=\"" + this.ImageSwitchFunc + "\" />"
+                            "<img src='img/" + marker + "' default-src='" + this.defaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror=\"" + this.ImageSwitchFunc + "\" />"
                             + "&nbsp;" + btn,      
                             planet.Name,
                             planet.Type,
@@ -696,13 +719,7 @@ class GalaxyMap {
             }
         });
 
-        $("#table-search-btn").click(function () {
-            thisObj.toggleBrowseTable();
-        });
-
-        $("#table-close-btn").click(function () {
-            thisObj.toggleBrowseTable();
-        });
+        this.BrowseInitialised = true;
     }
 
     initialisePlanetDirectory = () => {
@@ -862,8 +879,12 @@ class GalaxyMap {
                             }
                         }
 
+                        var marker = planet.Marker;
+                        if (Object.hasOwn(planet, "HasRings") && planet.HasRings && planet.Marker) {
+                            marker = planet.Marker.replace(".", "_nr.");
+                        }
                         dataSet.push([
-                            "<img src='img/" + planet.Marker + "' default-src='" + this.defaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror=\"" + this.ImageSwitchFunc + "\" />"
+                            "<img src='img/" + marker + "' default-src='" + this.defaultImagePath("planet", planet, true) + "'  style='width:28px;height:28px;' onerror=\"" + this.ImageSwitchFunc + "\" />"
                             + "&nbsp;" + btn,      
                             planet.Name,
                             planet.Type,
@@ -907,20 +928,20 @@ class GalaxyMap {
             }
         });
 
-        $("#directory-search-btn").click(function () {
-            thisObj.toggleDirectoryTable();
-        });
-
-        $("#directory-close-btn").click(function () {
-            thisObj.toggleDirectoryTable();
-        });
+        this.DirectoryInitialised = true;
     };
     
     toggleBrowseTable = () => {
+        if (!this.BrowseInitialised) {
+            this.initialiseBrowseFunction();
+        }
         $("#table-pane").toggle();
     };
 
     toggleDirectoryTable = () => {
+        if (!this.DirectoryInitialised) {
+            this.initialisePlanetDirectory();
+        }
         $("#directory-pane").toggle();
     };
 
@@ -972,7 +993,7 @@ class GalaxyMap {
     }
 
     scaleObjectIcon = (scale, starScale) => {
-        var multi = ((scale - 1) / 3) + 1;
+        var multi = ((scale - .5) / 3) + .5;
         if (starScale) {
             multi = scale + 1;
         }
@@ -1129,7 +1150,8 @@ class GalaxyMap {
             var marker = this.SystemMarkers[ix];
             var icon = marker.getIcon();
             var scale = marker.options.scale;
-            icon.options.iconSize =  [iconSize[0] * scale, iconSize[1] * scale];
+            var rings = marker.options.rings;
+            icon.options.iconSize =  [iconSize[0] * scale * (rings ? this.RingPlanetScale : 1), iconSize[1] * scale];
             marker.setIcon(icon);
         }
     };
@@ -1444,5 +1466,9 @@ class GalaxyMap {
             });
             return container;
         }
+    });
+
+    mapIcon = L.Icon.extend({
+
     });
 }
